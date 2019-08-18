@@ -1,0 +1,20 @@
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.7/bin/jupyter-serverextension", line 10, in <module>
+    sys.exit(main())
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/site-packages/jupyter_core/application.py", line 266, in launch_instance
+    return super(JupyterApp, cls).launch_instance(argv=argv, **kwargs)
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/site-packages/traitlets/config/application.py", line 658, in launch_instance
+    app.start()
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/site-packages/notebook/serverextensions.py", line 294, in start
+    super(ServerExtensionApp, self).start()
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/site-packages/jupyter_core/application.py", line 255, in start
+    self.subapp.start()
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/site-packages/notebook/serverextensions.py", line 211, in start
+    self.toggle_server_extension_python(arg)
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/site-packages/notebook/serverextensions.py", line 200, in toggle_server_extension_python
+    m, server_exts = _get_server_extension_metadata(package)
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/site-packages/notebook/serverextensions.py", line 328, in _get_server_extension_metadata
+    m = import_item(module)
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/site-packages/traitlets/utils/importstring.py", line 42, in import_item
+    return __import__(parts[0])
+ModuleNotFoundError: No module named 'jupyter_http_over_ws'

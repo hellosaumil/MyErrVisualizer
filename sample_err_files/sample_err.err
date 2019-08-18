@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "sample_file.py", line 274, in <module>
+    generate_image(iteration, netG)
+  File "sample_file.py", line 138, in generate_image
+    test_dir + '/samples_{}.png'.format(frame)
+  File "/home/user/repo/codes/folder1/folder2/sample_file2.py", line 31, in save_images
+    img = np.zeros((h*nh, w*nw))
+TypeError: 'float' object cannot be interpreted as an integer
