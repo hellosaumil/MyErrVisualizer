@@ -21,22 +21,21 @@ A Simple Command-Line Utility for Visualize your Python Errors
 <h2 style="color:tomato"> Options </h2>
 Describes all Options of myErrVisualizer
 
-	-f		 
+	-f			Provide the Error File Name that contains Python Error Traceback Calls After -f or --err_file_path option
 	--err_file_path		 
-		  		  Provide the Error File Name that contains Python Error Traceback Calls After -f or --err_file_path option
 
-	-n		 
+	-n			Number of Error Calls to be printed (only works with standard error tracesback calls)
 	--num_calls		 
-		  		  Number of Error Calls to be printed (only works with standard error tracesback calls)
+		  		  
 
-	-h	  Shows Usage Help
+	-h			Shows Usage Help
+	--help
 
 <h2 style="color:tomato"> Usage </h2>
 ```shell
 python myErrVisualizer.py                			# Displays Help Page
 python myErrVisualizer.py   -f   error_file.err			# Provide an error file
 python myErrVisualizer.py   -f   error_file.err   -n   3	# Provide number of calls to showcase
-
 ```
 alternatively,
 ```shell
