@@ -34,9 +34,9 @@ Describes all Options of myErrVisualizer
 <h2 style="color:tomato"> Usage </h2>
 ```shell
 python myErrVisualizer.py                			# Displays Help Page
+python myErrVisualizer.py   -f   error_file.err			# Provide an error file
+python myErrVisualizer.py   -f   error_file.err   -n   3	# Provide number of calls to showcase
 
-python myErrVisualizer.py   -f   error_file.err              # Upload a file to PenDrive Cloud
-python myErrVisualizer.py   -f   error_file.err   -n   3			# Download a file from PenDrive Cloud
 ```
 alternatively,
 ```shell
