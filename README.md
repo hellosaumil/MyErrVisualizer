@@ -55,6 +55,9 @@ Describes all Options of myErrVisualizer
 
 <h2 style="color:tomato"> Usage </h2>
 
+When creating a error file of the traceback calls, include logs starting from the line that states ```Traceback (most recent call last):``` to ```SomeError: Error Message that is displayed```
+
+
 ```shell
 python myErrVisualizer.py                			# Displays Help Page
 python myErrVisualizer.py   -f   error_file.err			# Provide an error file
