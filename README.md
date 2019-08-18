@@ -1,7 +1,7 @@
 # MyErrVisualizer
 MyErrVisualizer is an utility to better showcase a Traceback generated from Errors while running a Python File!
 <br>
-[Download just ONE file!](MyErrVisualizer.py)
+[Download just ONE file!](myErrVisualizer.py)
 <br>
 
 # Man Page like Description
