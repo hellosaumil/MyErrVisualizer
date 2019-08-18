@@ -10,13 +10,35 @@ MyErrVisualizer is an utility to better showcase a Traceback generated from Erro
 myErrVisualizer - MyErrVisualizer is an utility to better showcase a Traceback generated from Errors while running a Python File
 
 <h2 style="color:tomato"> Synopsis </h2>
-	myErrVisualizer [OPTION]... [ERROR_FILE_PATH]... [NUM_CALLS]...
+
+```myErrVisualizer [OPTION]... [ERROR_FILE_PATH]... [NUM_CALLS]...```
 
 <h2 style="color:tomato"> Description </h2>
 A Simple Command-Line Utility for Visualize your Python Errors
-	<br>
-  Note: Use of NUM_CALLS is only supported for standard error logs and not unenven logs, See Caveats to understand the differnce.
-  <br>
+
+It is often time-consuming for me to go through python error traceback calls to figure which file, which function and which line has the error. Also, the error statement is buried deep down in those traces which is hard to read. I attempt in this utility to increase the readability of python error logs. 
+
+Note: Use of ```NUM_CALLS``` is only supported for standard error logs and not unenven logs, See Caveats to understand the differnce.
+  
+  
+<h2 style="color:teal"> Showcase </h2>
+
+<h4 style="color:teal"> Comparision: MyErrVisualizer v/s Typical Python Error </h4>
+
+![MyErrVisualizer2](misc/myEV-2.png)
+![MyErrVisualizer2](misc/term-2.png)
+
+<h4 style="color:teal"> Comparision: MyErrVisualizer v/s Typical Python Error in Jupyter Notebook Logs </h4>
+
+![MyErrVisualizer1](misc/myEV-1.png)
+![MyErrVisualizer1](misc/term-1.png)
+
+<br>
+
+With Options like ```num_calls``` to show only First and Last ```n``` Calls. (Here, ```n=3```)
+
+![MyErrVisualizer1](misc/myEV-1_1.png)
+ 
   
 <h2 style="color:tomato"> Options </h2>
 Describes all Options of myErrVisualizer
