@@ -11,7 +11,7 @@ myErrVisualizer - MyErrVisualizer is an utility to better showcase a Traceback g
 
 <h2 style="color:tomato"> Synopsis </h2>
 
-```myErrVisualizer [OPTION]... [ERROR_FILE_PATH]... [NUM_CALLS]...```
+```myErrVisualizer ERROR_FILE_PATH... [NUM_CALLS]...```
 
 <h2 style="color:tomato"> Description </h2>
 A Simple Command-Line Utility for Visualize your Python Errors
@@ -52,10 +52,12 @@ With Options like ```num_calls``` to show only First and Last ```n``` Calls. (He
 <h2 style="color:tomato"> Options </h2>
 Describes all Options of myErrVisualizer
 
-	-f		Provide the Error File Name that contains Python Error Traceback Calls After -f or --err_file_path option
+	-f		Provide the Error File Name that contains 
+			Python Error Traceback Calls After -f or --err_file_path option
 	--err_file_path		 
 
-	-n		Number of Error Calls to be printed (only works with standard error tracesback calls)
+	-n		Number of Error Calls to be printed, default=None
+			(only works with standard error tracesback calls)
 	--num_calls		 
 		  		  
 
@@ -70,7 +72,7 @@ When creating a error file of the traceback calls, include logs starting from th
 ```shell
 python myErrVisualizer.py                			# Displays Help Page
 python myErrVisualizer.py   -f   error_file.err			# Provide an error file
-python myErrVisualizer.py   -f   error_file.err   -n   3	# Provide number of calls to showcase
+python myErrVisualizer.py   -f   error_file.err   -n   3	# Provide number of calls to showcase, default=None
 ```
 alternatively,
 
