@@ -14,7 +14,7 @@ myErrVisualizer - MyErrVisualizer is an utility to better showcase a Traceback g
 ```myErrVisualizer ERROR_FILE_PATH... [NUM_CALLS]...```
 
 <h2 style="color:tomato"> Description </h2>
-A Simple Command-Line Utility for Visualize your Python Errors
+A Simple Command-Line Utility to Visualize your Python Errors
 
 It is often time-consuming for me to go through python error traceback calls to figure which file, which function and which line has the error. Also, the error statement is buried deep down in those traces which is hard to read. I attempt in this utility to increase the readability of python error logs. 
 
