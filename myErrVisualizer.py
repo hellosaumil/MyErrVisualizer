@@ -154,11 +154,20 @@ class MyErrVisualizer():
                 if n_err and level%(n_err)==0 and level!=0:
                     print(("\n"+"   "*(level+1)+".")*3 +"\n")
 
-                print("\n{}{} @ {} \n{}{}".format("   "*level,
-                                                    highlight+ " "+el+": "+ec+" " +end,
-                                                    bold+ ef +end,
-                                                    "   "*level,
-                                                    underline+ fp +end))
+#                 print("\n{}{} @ {} \n{}{}".format("   "*level,
+#                                                     highlight+ " "+el+": "+ec+" " +end,
+#                                                     bold+ ef +end,
+#                                                     "   "*level,
+#                                                     underline+ fp +end))
+
+                print(" \n{}{} \n{}{} @ {}".format("   "*level,
+                                                 highlight+" "+ec+" "+end,
+                                                 "   "*level,
+                                                 bold+"Line "+ el +": "+ ef +end,
+                                                 underline+ fp +end))
+
+
+
             print(red+"-"*(len(prime_err_msg) - (len(end)+len(red)))+end+"\n")
 
         else:
@@ -166,7 +175,9 @@ class MyErrVisualizer():
             print(red+"-"*(len(prime_err_msg) - (len(end)+len(red)))+end)
             print("{}".format(prime_err_msg))
 
-            for ix in range(idx):
+            levels = min(idx, n_err) if n_err is not None else idx
+
+            for ix in range(levels):
                 ec = idx_to_code[ix+1]
 
                 files_info = code_to_filepath[ec]
@@ -177,15 +188,15 @@ class MyErrVisualizer():
                         "   "*ix, highlight+" "+ec+" "+end))
 
                 for (fp, el, ef) in files_info:
-                    print(" {}{} @ {}".format(
-                        "   "*ix,bold+ el +": "+ ef +end,
+                    print("{}{} @ {}".format(
+                        "   "*ix,bold+"Line "+ el +": "+ ef +end,
                         underline+ fp +end))
             print(red+"-"*(len(prime_err_msg) - (len(end)+len(red)))+end+"\n")
 
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='')
-    parser.add_argument('-f', '--err_filepath', help='Error File Path having the Traceback Calls')
+    parser.add_argument('-f', '--err_file_path', help='Error File Path having the Traceback Calls', required=True)
     parser.add_argument('-n', '--num_calls', help='Number of Traceback Calls', type=int)
 
     """ Sample Usage """
@@ -205,10 +216,10 @@ if __name__ == '__main__':
         sys.exit(1)
 
 
-    if not args.err_filepath:
+    if not args.err_file_path:
         err_filepath = ''
     else:
-        err_filepath = args.err_filepath
+        err_filepath = args.err_file_path
 
     if args.num_calls is None:
         num_calls = None
