@@ -26,12 +26,21 @@ Note: Use of ```NUM_CALLS``` is only supported for standard error logs and not u
 <h4 style="color:teal"> Comparision: MyErrVisualizer v/s Typical Python Error </h4>
 
 ![MyErrVisualizer2](misc/myEV-2.png)
+myErrVisualizer in a Terminal Window
+
+
 ![MyErrVisualizer2](misc/term-2.png)
+Typical Python Error shown in a Terminal Window
+
 
 <h4 style="color:teal"> Comparision: MyErrVisualizer v/s Typical Python Error in Jupyter Notebook Logs </h4>
 
 ![MyErrVisualizer1](misc/myEV-1.png)
+myErrVisualizer in a Terminal Window
+
+
 ![MyErrVisualizer1](misc/term-1.png)
+Typical Python Error shown in a Terminal Window
 
 <br>
 
