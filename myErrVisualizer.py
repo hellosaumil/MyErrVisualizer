@@ -8,7 +8,7 @@ class MyErrVisualizer():
     Class for Visualizing Python Traceback of Errors
     """
 
-    def __init__(self, err_filepath, n_err=0):
+    def __init__(self, err_filepath, n_err=None):
         """
         Initialize Error Visualizer with input error filepath and number of error traces
 
@@ -59,12 +59,13 @@ class MyErrVisualizer():
             return [], []
 
         with open(err_filepath) as err_file:
+
             err_header = err_file.readline().strip()
             err_hdr_macro = "Traceback (most recent call last):"
 
             if err_header == err_hdr_macro:
                 error_lines = [line.strip() for line in err_file]
-                error_lines, prime_error = error_lines[:-1], error_lines[-1]
+                error_lines, prime_error = error_lines[:-1][::-1], error_lines[-1]
                 return error_lines, prime_error
 
             else:
@@ -85,11 +86,11 @@ class MyErrVisualizer():
         if not os.path.isfile(self.err_file_path):
             return None
 
-        if not isinstance(n_err, int):
+        if not isinstance(n_err, int) and n_err is not None:
             n_err = None
 
         if n_err is not None:
-            n_err = 0 if n_err < 0 else n_err
+            n_err = 0 if n_err <= 0 else n_err
 
         err_type, err_msg = \
             re.findall(r'(.*):', self.prime_error)[0].strip(), \
@@ -98,54 +99,88 @@ class MyErrVisualizer():
         file_paths, line_nos, err_funcs, err_codes = [], [], [], []
         total_count = len(self.error_lines)
 
-        if total_count % 2 == 0:
-            for err in self.error_lines:
-                if err.startswith("File"):
-                    file_path, line_no, err_func = \
-                        re.findall(r'File "(.*)", line \d+, in \D+', err)[0], \
-                        re.findall(r'File ".*", line (\d+), in \D+', err)[0], \
-                        re.findall(r'File ".*", line \d+, in (.*)', err)[0]
+        code_to_filepath = {}
+        idx_to_code = {}
+        idx = 0
 
-                    file_paths.append(re.sub(os.path.expanduser("~")+'/',"~/", file_path)), line_nos.append(line_no), err_funcs.append(err_func)
+        for err in self.error_lines:
+            if err.startswith('File \"'):
+                file_path, line_no, err_func = \
+                    re.findall(r'File "(.*)"|$, line \d+, in .*', err)[0], \
+                    re.findall(r'File ".*", line (\d+)|$, in .*', err)[0], \
+                    re.findall(r'File ".*", line \d+, in (.*)|$', err)[0]
 
-                else:
-                    err_codes.append(err)
+                file_paths.append(re.sub(os.path.expanduser("~")+'/',"~/", file_path)), line_nos.append(line_no), err_funcs.append(err_func)
 
-        file_paths, line_nos, err_funcs, err_codes = \
-                                                    file_paths[::-1], \
-                                                    line_nos[::-1], \
-                                                    err_funcs[::-1], \
-                                                    err_codes[::-1]
+                new_file_info = [re.sub(os.path.expanduser("~")+'/',"~/", file_path),
+                                           line_no, err_func]
+
+                code = idx_to_code[idx]
+                prev_files_info = code_to_filepath.get(code,[])
+
+                code_to_filepath[code] = prev_files_info + [new_file_info] \
+                                            if prev_files_info != [] \
+                                            else [new_file_info]
+
+            else:
+                idx += 1
+                err_codes.append(err)
+                idx_to_code[idx] = "{} --- {}".format(idx, err)
 
         total_count = total_count//2
         n_err = (None if n_err >= (total_count+1)//2 and n_err != 0 else n_err) if (n_err is not None) else n_err
 
-        if n_err != None:
-            file_paths, line_nos, err_funcs, err_codes = \
-                                                        file_paths[:n_err]+file_paths[total_count-n_err:], \
-                                                        line_nos[:n_err]+line_nos[total_count-n_err:], \
-                                                        err_funcs[:n_err]+err_funcs[total_count-n_err:], \
-                                                        err_codes[:n_err]+err_codes[total_count-n_err:]
-
         red, end = '\033[91;1m', '\033[0;0m'
         highlight, bold, underline = '\033[7m', '\033[1m', '\033[4m'
 
-        prime_err_msg = red+err_type +" -> "+ err_msg+end
-        print(red+"-"*(len(prime_err_msg) - (len(end)+len(red)))+end)
-        print("{}".format(prime_err_msg))
 
-        for (level, (fp, el, ef, ec)) in enumerate(zip(file_paths, line_nos, err_funcs, err_codes)):
+        if len(file_paths) == len(err_codes):
+            if n_err != None:
+                file_paths, line_nos, err_funcs, err_codes = \
+                                                            file_paths[:n_err]+file_paths[total_count-n_err:], \
+                                                            line_nos[:n_err]+line_nos[total_count-n_err:], \
+                                                            err_funcs[:n_err]+err_funcs[total_count-n_err:], \
+                                                            err_codes[:n_err]+err_codes[total_count-n_err:]
 
-            if n_err and level%(n_err)==0 and level!=0:
-                print(("\n"+"   "*(level+1)+".")*3 +"\n")
+            red, end = '\033[91;1m', '\033[0;0m'
+            highlight, bold, underline = '\033[7m', '\033[1m', '\033[4m'
 
-            print("\n{}{} @ {} \n{}{}".format("   "*level,
-                                                highlight+ " "+el+": "+ec+" " +end,
-                                                bold+ ef +end,
-                                                "   "*level,
-                                                underline+ fp +end))
-        print(red+"-"*(len(prime_err_msg) - (len(end)+len(red)))+end+"\n")
+            prime_err_msg = red+err_type +" -> "+ err_msg+end
+            print(red+"-"*(len(prime_err_msg) - (len(end)+len(red)))+end)
+            print("{}".format(prime_err_msg))
 
+            for (level, (fp, el, ef, ec)) in enumerate(zip(file_paths, line_nos, err_funcs, err_codes)):
+
+                if n_err and level%(n_err)==0 and level!=0:
+                    print(("\n"+"   "*(level+1)+".")*3 +"\n")
+
+                print("\n{}{} @ {} \n{}{}".format("   "*level,
+                                                    highlight+ " "+el+": "+ec+" " +end,
+                                                    bold+ ef +end,
+                                                    "   "*level,
+                                                    underline+ fp +end))
+            print(red+"-"*(len(prime_err_msg) - (len(end)+len(red)))+end+"\n")
+
+        else:
+            prime_err_msg = red+err_type +" -> "+ err_msg+end
+            print(red+"-"*(len(prime_err_msg) - (len(end)+len(red)))+end)
+            print("{}".format(prime_err_msg))
+
+            for ix in range(idx):
+                ec = idx_to_code[ix+1]
+
+                files_info = code_to_filepath[ec]
+
+                ec = ec.split("{} --- ".format(ix+1))[1]
+
+                print(" \n{}{}".format(
+                        "   "*ix, highlight+" "+ec+" "+end))
+
+                for (fp, el, ef) in files_info:
+                    print(" {}{} @ {}".format(
+                        "   "*ix,bold+ el +": "+ ef +end,
+                        underline+ fp +end))
+            print(red+"-"*(len(prime_err_msg) - (len(end)+len(red)))+end+"\n")
 
 if __name__ == '__main__':
 
