@@ -122,7 +122,7 @@ i.e., Each line starting with ```File``` may not be followed by a code
 Beta 0.1 - Only Supports Unix Systems (i.e, macOS, OS X, Linux - Ubuntu), Supports Python 2.x and 3.x
 
 <h2 style="color:tomato"> Author </h2>
-Written by Saumil Shah. <a href="https://hellosaumil.github.io"> https://hellosaumil.github.io </a>
+Written by Saumil Shah. 
 <br> More details about this project can be found at : <a href="https://github.com/hellosaumil/MyErrVisualizer"> https://github.com/hellosaumil/MyErrVisualizer </a>
 <br>
 [Download source code here!](/)
