@@ -3,9 +3,11 @@ MyErrVisualizer is an utility to better showcase a Traceback generated from Erro
 <br>
 
 <h4> For Web Version </h4>
+
 [MyErrVisualizer on Heroku](https://my-err-visualizer.herokuapp.com)
 
 <h4> For CLI </h4>
+
 [Download just ONE file! - myErrVisualizer.py](myErrVisualizer.py)
 <br>
 
