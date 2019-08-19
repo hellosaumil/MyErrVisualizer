@@ -8,22 +8,25 @@ class MyErrVisualizer():
     Class for Visualizing Python Traceback of Errors
     """
 
-    def __init__(self, err_filepath, n_err=None):
+    def __init__(self, err_filepath_lines, n_err=None, cloud_mode=False):
         """
         Initialize Error Visualizer with input error filepath and number of error traces
 
             Args:
-                err_filepath (str): File path to the Traceback Calls from Python
+                err_filepath_lines (str, list): File path or File Lines of the Traceback Calls from Python
                 n_err (int): Number of traceback calls to be shown, default: 0
+                cloud_mode (bool): If Running in Cloud Mode
         """
 
         if not isinstance(n_err, int) and n_err is not None: raise TypeError('Invalid Type : n_err should be an Integer')
-        if not isinstance(err_filepath, str): raise TypeError('Invalid Type : err_filepath should be a String')
+        if not isinstance(err_filepath_lines, (str, list)): raise TypeError('Invalid Type : err_filepath should be a String or a 01List')
+        if not isinstance(cloud_mode, bool): raise TypeError('Invalid Type : cloud_mode should be a Boolean')
 
-        self.err_file_path = err_filepath
-        self.error_lines, self.prime_error = self.getErrorInfo(self.err_file_path)
+        self.cloud_mode = cloud_mode
+        self.err_filepath_lines = err_filepath_lines
+        self.error_lines, self.prime_error = self.getErrorInfo(self.err_filepath_lines, self.cloud_mode)
 
-        self.visualizeErr(n_err=n_err)
+        self.visualizeErr(n_err=n_err, cloud_mode=self.cloud_mode)
         pass
 
     def __str__(self):
@@ -38,13 +41,13 @@ class MyErrVisualizer():
         """
         return len(self.error_lines) // 2
 
-    def getErrorInfo(self, err_filepath):
+    def getErrorInfo(self, err_filepath_lines, cloud_mode):
         """
         Retruns Error Information from the Traceback Calls
         Parses all lines of errors
 
         Args:
-                err_filepath (str): File path to the Traceback Calls from Python
+                err_filepath_lines (str, list): File path or File Lines of the Traceback Calls from Python
 
         Returns:
                 error_lines (list): All the Traceback Calls
@@ -52,39 +55,43 @@ class MyErrVisualizer():
 
         """
 
-        if not os.path.isfile(err_filepath):
-            print("\n*** File Path Given: {}".format(err_filepath))
-            print("*** Invalid File Path! Aborting...")
-            # raise Exception("*** Invalid File Path! Aborting...")
-            return [], []
+        err_file = []
 
-        with open(err_filepath) as err_file:
+        if cloud_mode:
+            err_file = err_filepath_lines
 
-            err_header = err_file.readline().strip()
-            err_hdr_macro = "Traceback (most recent call last):"
-
-            if err_header == err_hdr_macro:
-                error_lines = [line.strip() for line in err_file]
-                error_lines, prime_error = error_lines[:-1][::-1], error_lines[-1]
-                return error_lines, prime_error
-
-            else:
-                print("\n*** Header Given: {}".format(err_header))
-                print("*** Invalid Error Header! Aborting...")
-                # raise Exception("*** Invalid Error Header! Aborting...")
+        else:
+            if not os.path.isfile(err_filepath_lines):
+                print("\n*** File Path Given: {}".format(err_filepath_lines))
+                print("*** Invalid File Path! Aborting...")
+                # raise Exception("*** Invalid File Path! Aborting...")
                 return [], []
 
+            with open(err_filepath_lines) as err_fp:
+                err_file = err_fp.readlines()
 
-    def visualizeErr(self, n_err=None):
+        err_header = err_file[0].strip()
+        err_hdr_macro = "Traceback (most recent call last):"
+
+        if err_header == err_hdr_macro:
+            error_lines = [line.strip() for line in err_file[1:]]
+            error_lines, prime_error = error_lines[:-1][::-1], error_lines[-1]
+            return error_lines, prime_error
+
+        else:
+            print("\n*** Header Given: {}".format(err_header))
+            print("*** Invalid Error Header! Aborting...")
+            # raise Exception("*** Invalid Error Header! Aborting...")
+            return [], []
+
+
+    def visualizeErr(self, n_err=None, cloud_mode=False):
         """
         To Visualize All the Traceback Calls
 
             Args:
                 n_err (int): Number of traceback calls to be shown, default: 0
         """
-
-        if not os.path.isfile(self.err_file_path):
-            return None
 
         if not isinstance(n_err, int) and n_err is not None:
             n_err = None
@@ -102,6 +109,9 @@ class MyErrVisualizer():
         code_to_filepath = {}
         idx_to_code = {}
         idx = 0
+
+
+        cloud_output = ""
 
         for err in self.error_lines:
             if err.startswith('File \"'):
@@ -149,16 +159,14 @@ class MyErrVisualizer():
             print(red+"-"*(len(prime_err_msg) - (len(end)+len(red)))+end)
             print("{}".format(prime_err_msg))
 
+            cloud_output += '<b class="errHeading">'+"<br>{}</b>".format("<err_tag>"+err_type +" -> "+ err_msg+"</err_tag>")
+
             for (level, (fp, el, ef, ec)) in enumerate(zip(file_paths, line_nos, err_funcs, err_codes)):
 
                 if n_err and level%(n_err)==0 and level!=0:
                     print(("\n"+"   "*(level+1)+".")*3 +"\n")
 
-#                 print("\n{}{} @ {} \n{}{}".format("   "*level,
-#                                                     highlight+ " "+el+": "+ec+" " +end,
-#                                                     bold+ ef +end,
-#                                                     "   "*level,
-#                                                     underline+ fp +end))
+                    cloud_output += ("\n"+"   "*(level+1)+".")*3 +"\n"
 
                 print(" \n{}{} \n{}{} @ {}".format("   "*level,
                                                  highlight+" "+ec+" "+end,
@@ -166,7 +174,11 @@ class MyErrVisualizer():
                                                  bold+"Line "+ el +": "+ ef +end,
                                                  underline+ fp +end))
 
-
+                cloud_output += " <br><br>{}{} <br>{}{} @ {}".format(" &emsp; "*level,
+                                                 "<mark>"+" "+ec+" "+"</mark>",
+                                                 " &emsp; "*level,
+                                                 "<b>"+"Line "+ el +": "+ ef +"</b>",
+                                                 "<u>"+ fp +"</u>")
 
             print(red+"-"*(len(prime_err_msg) - (len(end)+len(red)))+end+"\n")
 
@@ -174,6 +186,8 @@ class MyErrVisualizer():
             prime_err_msg = red+err_type +" -> "+ err_msg+end
             print(red+"-"*(len(prime_err_msg) - (len(end)+len(red)))+end)
             print("{}".format(prime_err_msg))
+
+            cloud_output += '<b class="errHeading">'+"<br>{}</b>".format("<err_tag>"+err_type +" -> "+ err_msg+"</err_tag>")
 
             levels = min(idx, n_err) if n_err is not None else idx
 
@@ -187,11 +201,25 @@ class MyErrVisualizer():
                 print(" \n{}{}".format(
                         "   "*ix, highlight+" "+ec+" "+end))
 
+                cloud_output += " <br><br>{}{}".format(
+                        " &emsp; "*ix, "<mark>"+" "+ec+" "+"</mark>")
+
                 for (fp, el, ef) in files_info:
                     print("{}{} @ {}".format(
                         "   "*ix,bold+"Line "+ el +": "+ ef +end,
                         underline+ fp +end))
+
+                    cloud_output += "{}{} @ {}".format(
+                        " &emsp; "*ix,"<b>"+"Line "+ el +": "+ ef +"</b>",
+                        "<u>"+ fp +"</u>")
+
             print(red+"-"*(len(prime_err_msg) - (len(end)+len(red)))+end+"\n")
+
+        if cloud_mode:
+            print("\n\n\n\n #############")
+            print(cloud_output)
+
+            self.cloud_output = cloud_output
 
 if __name__ == '__main__':
 
